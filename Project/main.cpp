@@ -1,23 +1,20 @@
 #include <iostream>
-#include <vector>
 
-class SomeClass
+struct Test
 {
-public:
-	static int getValue()
-	{
-		return value;
-	}
-
-private:
-	static int value;
+	using foo = int;
 };
 
-int SomeClass::value;
+template <typename T>
+void f(typename T::foo) {}
+
+template <typename T>
+void f(T) {}
 
 int main()
 {
-	std::cout << SomeClass::getValue() << std::endl;
+	f<Test>(10);
+	f<int>(10); // no int::foo, but doesn't fail because 2nd function is used
 
-	system("pause");
+	std::cin.get();
 }
