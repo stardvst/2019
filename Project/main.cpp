@@ -1,20 +1,32 @@
 #include <iostream>
+#include <string>
 
-struct Test
+struct A
 {
-	using foo = int;
+	template <typename String>
+	void setStr(String&& first)
+	{
+		m_sStr += static_cast<String&&>(first);
+	}
+
+	template <typename String, typename... Strings>
+	void setStr(String&& str, Strings&&... rest);
+
+	std::string m_sStr;
 };
 
-template <typename T>
-void f(typename T::foo) {}
-
-template <typename T>
-void f(T) {}
+template <typename String, typename... Strings>
+void A::setStr(String&& str, Strings&&... rest)
+{
+	m_sStr += static_cast<String&&>(str);
+	setStr(static_cast<Strings&&>(rest)...);
+}
 
 int main()
 {
-	f<Test>(10);
-	f<int>(10); // no int::foo, but doesn't fail because 2nd function is used
+	A a;
+	a.setStr("hello", " world");
+	std::cout << a.m_sStr;
 
 	std::cin.get();
 }
