@@ -1,33 +1,36 @@
 #include <iostream>
-#include <string>
+#include <fstream>
+#include <cstring>
 
-struct A
+namespace util
 {
-	template <typename String>
-	void setStr(String&& first)
+
+bool isSQLite(const char *filename)
+{
+	std::ifstream ifStream(filename);
+	if (!ifStream)
+		return false;
+
+	const char sqliteHeader[] = { "SQLite format 3" };
+
+	char header[sizeof sqliteHeader];
+	for (char &ch : header)
 	{
-		m_sStr += static_cast<String&&>(first);
+		if (ifStream.eof() || !ifStream.get(ch))
+			return false;
 	}
 
-	template <typename String, typename... Strings>
-	void setStr(String&& str, Strings&&... rest);
-
-	std::string m_sStr;
-};
-
-template <typename String, typename... Strings>
-void A::setStr(String&& str, Strings&&... rest)
-{
-	m_sStr = static_cast<String&&>(str);
-	setStr(static_cast<Strings&&>(rest)...);
+	ifStream.close();
+	//std::cout << header;
+	return std::strcmp(header, sqliteHeader) == 0;
 }
+
+} // namespace util
 
 int main()
 {
-	A a;
-	a.setStr("hello", " world");
-	a.setStr("1", " 2");
-	std::cout << a.m_sStr;
+	if (util::isSQLite(R"(C:\Users\liliam\Desktop\PYDB_top)"))
+		std::cout << "Valid SQLite file!";
 
 	std::cin.get();
 }
