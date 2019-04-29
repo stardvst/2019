@@ -1,15 +1,16 @@
 #include <conio.h>
 
-void f()
-{
-}
+void *malloc(size_t);
 
-void g()
+void f(int n)
 {
-	f(2);
+	int *p = malloc(n * sizeof(char));
+	char c;
+	void *pv = &c;
+	int *pi = pv; // void* -> int*, not C++
 }
 
 int main()
 {
-	_getch();
+	(void)_getch();
 }

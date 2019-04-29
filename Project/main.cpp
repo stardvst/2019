@@ -1,12 +1,11 @@
 #include <iostream>
 
-void f()
+void f(int n)
 {
-}
-
-void g()
-{
-	f(2);
+	int *p = new int(n * sizeof(char));
+	char c;
+	void *pv = &c;
+	int *pi = pv; // void* -> int*, not C++
 }
 
 int main()
