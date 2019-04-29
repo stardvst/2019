@@ -1,5 +1,15 @@
+#include <iostream>
+
+void f()
+{
+}
+
+void g()
+{
+	f(2);
+}
+
 int main()
 {
-	double sq2 = sqrt(2); // not C++
-	int s = sizeof('a'); // 1 in C++, sizeof(int) in C
+	std::cin.get();
 }
