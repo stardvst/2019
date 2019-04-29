@@ -1,3 +1,5 @@
+#include <math.h>
+
 int main()
 {
 	double sq2 = sqrt(2); // not C++
