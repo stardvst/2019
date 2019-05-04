@@ -1,16 +1,18 @@
+#include <stdio.h>
 #include <conio.h>
-
-void *malloc(size_t);
-
-void f(int n)
-{
-	int *p = malloc(n * sizeof(char));
-	char c;
-	void *pv = &c;
-	int *pi = pv; // void* -> int*, not C++
-}
 
 int main()
 {
+	char ch1 = 0;
+	char ch2 = 0;
+	char *p1 = &ch1;
+	void *p2 = p1;
+
+	int *p3 = p2; // unsafe, legal C, not C++
+
+	printf("%d %d\n", ch1, ch2);
+	*p3 -= 1;
+	printf("%d %d\n", ch1, ch2);
+
 	(void)_getch();
 }
