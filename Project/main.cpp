@@ -1,11 +1,14 @@
 #include <iostream>
 
-#include "Header.h"
+struct Fred
+{
+	int a;
+};
 
 int main()
 {
-	Fred fred;
-	c_function(&fred);
+	Fred x;
+	std::cout << x.a << std::endl;
 
 	std::cin.get();
 	return 0;
