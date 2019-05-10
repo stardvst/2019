@@ -1,20 +1,50 @@
 #include <iostream>
 
+class Top
+{
+public:
+	int top = 1;
+};
+
+class Left : public Top
+{
+public:
+	int left = 2;
+};
+
+class Right : public Top
+{
+public:
+	int right = 2;
+};
+
+class Bottom : public Left, public Right
+{
+public:
+	int bottom = 3;
+};
+
 int main()
 {
-	uint16_t numberA, numberB;
-	numberA = 65535;
-	numberB = numberA + 1;
+	auto left = new Left;
+	Top *top = left;
 
-	uint32_t numberC, numberD;
-	numberC = 4294967295;
-	numberD = numberC + 1;
+	std::cout << "left->left: " << left->left << ", left->top: " << left->top << '\n';
+	std::cout << "top->top: " << top->top << '\n';
 
-	std::cout << numberA + 1 << '\n'; // output int
-	std::cout << numberB << '\n'; // type is unsigned => 65536 is reduced to (65536 % 65536 = 0)
+	auto bottom = new Bottom;
+	left = bottom;
+	
+	Right *right = bottom;
 
-	std::cout << numberC + 1 << '\n';
-	std::cout << numberD << '\n';
+	std::cout << "left: " << left << ", right: " << right << '\n';
+
+	// top = bottom; ambiguous
+
+	Top *topL = static_cast<Left *>(bottom);
+	Top *topR = static_cast<Right *>(bottom);
+
+	std::cout << "top (left): " << topL << ", top (right): " << topR << '\n';
 
 	std::cin.get();
 	return 0;
