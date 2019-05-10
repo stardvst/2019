@@ -6,13 +6,13 @@ public:
 	int top = 1;
 };
 
-class Left : public Top
+class Left : virtual public Top
 {
 public:
 	int left = 2;
 };
 
-class Right : public Top
+class Right : virtual public Top
 {
 public:
 	int right = 2;
@@ -26,25 +26,13 @@ public:
 
 int main()
 {
-	auto left = new Left;
-	Top *top = left;
-
-	std::cout << "left->left: " << left->left << ", left->top: " << left->top << '\n';
-	std::cout << "top->top: " << top->top << '\n';
-
 	auto bottom = new Bottom;
-	left = bottom;
-	
+	Left *left = bottom;
 	Right *right = bottom;
 
-	std::cout << "left: " << left << ", right: " << right << '\n';
-
-	// top = bottom; ambiguous
-
-	Top *topL = static_cast<Left *>(bottom);
-	Top *topR = static_cast<Right *>(bottom);
-
-	std::cout << "top (left): " << topL << ", top (right): " << topR << '\n';
+	std::cout << "bottom: " << bottom << '\n';
+	std::cout << "left: " << left << ", left->left: " << left->left << ", left->top: " << left->top << '\n';
+	std::cout << "right: " << right << ", right->right: " << left->left << ", right->top: " << left->top << '\n';
 
 	std::cin.get();
 	return 0;
