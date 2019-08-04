@@ -2,77 +2,26 @@
 #include <vector>
 #include <unordered_map>
 
-enum AnimalType
+struct Person;
+struct ReactionVisitor
 {
-	DOG, CAT, PIG, LIZARD, HORSE
+	ReactionVisitor(Person *person) : m_person(person) {}
+	Person *m_person;
 };
 
 struct Animal
 {
 	virtual std::string noise() const = 0;
-	virtual AnimalType getType() const = 0;
+	virtual void visit(ReactionVisitor &visitor) = 0;
 	virtual ~Animal() = default;
 };
 
-using AnimalCollection = std::vector<Animal *>;
-
-struct Cat : Animal
-{
-	virtual std::string noise() const override
-	{
-		return "meow";
-	}
-
-	virtual AnimalType getType() const override
-	{
-		return CAT;
-	}
-};
-
-struct Dog : Animal
-{
-	virtual std::string noise() const override
-	{
-		return "woof";
-	}
-
-	virtual AnimalType getType() const override
-	{
-		return DOG;
-	}
-};
-
-struct Horse : Animal
-{
-	virtual std::string noise() const override
-	{
-		return "weef";
-	}
-
-	virtual AnimalType getType() const override
-	{
-		return HORSE;
-	}
-};
-
-struct Person;
-using ReactionHash = std::unordered_map<AnimalType, void (Person:: *)(Animal *)>;
-
 struct Person
 {
-	ReactionHash getMap() const
-	{
-		ReactionHash hash;
-		hash[CAT] = &Person::pet;
-		hash[DOG] = &Person::runaway;
-		hash[HORSE] = &Person::pet;
-		return hash;
-	}
-
 	void ReactTo(Animal *animal)
 	{
-		auto functions = getMap();
-		(this->*functions[animal->getType()])(animal);
+		ReactionVisitor visitor(this);
+		animal->visit(visitor);
 	}
 
 	void pet(Animal *a)
@@ -86,16 +35,41 @@ struct Person
 	}
 };
 
+struct Cat : Animal
+{
+	virtual std::string noise() const override
+	{
+		return "meow";
+	}
+};
+
+struct Dog : Animal
+{
+	virtual std::string noise() const override
+	{
+		return "woof";
+	}
+
+	void visit(ReactionVisitor &visitor) override
+	{
+		// drawback: why should dog dictate how person reacts to it
+		auto person = visitor.m_person;
+		if (m_breed == Dashchund)
+			person->runaway(this);
+		else
+			person->pet(this);
+	}
+
+	enum Breed { Dashchund, Labrador };
+	Breed m_breed = Dashchund;
+};
+
 int main()
 {
-	auto cat = new Cat;
 	auto dog = new Dog;
-	auto horse = new Horse;
 
 	Person p;
-	p.ReactTo(cat);
 	p.ReactTo(dog);
-	p.ReactTo(horse);
 
 	std::cin.get();
 	return 0;
