@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
 enum AnimalType
 {
@@ -54,14 +55,24 @@ struct Horse : Animal
 	}
 };
 
+struct Person;
+using ReactionHash = std::unordered_map<AnimalType, void (Person:: *)(Animal *)>;
+
 struct Person
 {
+	ReactionHash getMap() const
+	{
+		ReactionHash hash;
+		hash[CAT] = &Person::pet;
+		hash[DOG] = &Person::runaway;
+		hash[HORSE] = &Person::pet;
+		return hash;
+	}
+
 	void ReactTo(Animal *animal)
 	{
-		if (animal->getType() == CAT || animal->getType() == HORSE)
-			pet(animal);
-		else if (animal->getType() == DOG)
-			runaway(animal);
+		auto functions = getMap();
+		(this->*functions[animal->getType()])(animal);
 	}
 
 	void pet(Animal *a)
