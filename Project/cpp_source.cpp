@@ -1,39 +1,70 @@
 #include <iostream>
+#include <vector>
 
-class Final;
-
-class MakeFinal
+struct Animal
 {
-private:
-	MakeFinal()
-	{
-		std::cout << __FUNCTION__ << std::endl;
-	}
-
-	friend class Final;
+	virtual std::string noise() const = 0;
+	virtual ~Animal() = default;
 };
 
-class Final : public MakeFinal
+using AnimalCollection = std::vector<Animal *>;
+
+struct Cat : Animal
 {
-public:
-	Final()
+	virtual std::string noise() const override
 	{
-		std::cout << __FUNCTION__ << std::endl;
+		return "meow";
 	}
 };
 
-class Derived : public Final
+struct Dog : Animal
 {
-public:
-	Derived()
+	virtual std::string noise() const override
 	{
-		std::cout << __FUNCTION__ << std::endl;
+		return "woof";
+	}
+};
+
+struct Horse : Animal
+{
+	virtual std::string noise() const override
+	{
+		return "weef";
+	}
+};
+
+struct Person
+{
+	void ReactTo(Animal *animal)
+	{
+		if (dynamic_cast<Cat *>(animal) || dynamic_cast<Horse *>(animal))
+			pet(animal);
+		else if (dynamic_cast<Dog *>(animal))
+			runaway(animal);
+	}
+
+	void pet(Animal *a)
+	{
+		std::cout << "petting" << std::endl;
+	}
+
+	void runaway(Animal *a)
+	{
+		std::cout << "run away" << std::endl;
 	}
 };
 
 int main()
 {
-	Derived d;
+	auto cat = new Cat;
+	auto dog = new Dog;
+	auto horse = new Horse;
+
+	Person p;
+	p.ReactTo(cat);
+	p.ReactTo(dog);
+	p.ReactTo(horse);
+
 	std::cin.get();
 	return 0;
 }
