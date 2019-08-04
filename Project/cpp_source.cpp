@@ -1,9 +1,15 @@
 #include <iostream>
 #include <vector>
 
+enum AnimalType
+{
+	DOG, CAT, PIG, LIZARD, HORSE
+};
+
 struct Animal
 {
 	virtual std::string noise() const = 0;
+	virtual AnimalType getType() const = 0;
 	virtual ~Animal() = default;
 };
 
@@ -15,6 +21,11 @@ struct Cat : Animal
 	{
 		return "meow";
 	}
+
+	virtual AnimalType getType() const override
+	{
+		return CAT;
+	}
 };
 
 struct Dog : Animal
@@ -22,6 +33,11 @@ struct Dog : Animal
 	virtual std::string noise() const override
 	{
 		return "woof";
+	}
+
+	virtual AnimalType getType() const override
+	{
+		return DOG;
 	}
 };
 
@@ -31,15 +47,20 @@ struct Horse : Animal
 	{
 		return "weef";
 	}
+
+	virtual AnimalType getType() const override
+	{
+		return HORSE;
+	}
 };
 
 struct Person
 {
 	void ReactTo(Animal *animal)
 	{
-		if (dynamic_cast<Cat *>(animal) || dynamic_cast<Horse *>(animal))
+		if (animal->getType() == CAT || animal->getType() == HORSE)
 			pet(animal);
-		else if (dynamic_cast<Dog *>(animal))
+		else if (animal->getType() == DOG)
 			runaway(animal);
 	}
 
