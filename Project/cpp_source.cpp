@@ -1,19 +1,13 @@
 #include <iostream>
 
+template <typename... Ts>
+using void_t = void;
+
+template <typename T, typename = void>
+struct has_typedef : std::false_type {};
+
 template <typename T>
-struct has_typedef
-{
-	using yes = char[1];
-	using no = char[2];
-
-	template <typename C>
-	static yes &test(typename C::foobar *);
-
-	template <typename C>
-	static no &test(...);
-
-	static const bool value = sizeof(test<T>(nullptr)) == sizeof(yes);
-};
+struct has_typedef<T, void_t<typename T::foobar>> : std::true_type {};
 
 struct foo
 {
