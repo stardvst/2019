@@ -1,25 +1,24 @@
 #include <iostream>
-
-template <typename... Ts>
-using void_t = void;
-
-template <typename T, typename = void>
-struct has_typedef : std::false_type {};
-
-template <typename T>
-struct has_typedef<T, void_t<typename T::foobar>> : std::true_type {};
-
-struct foo
-{
-	using foobar = float;
-};
+#include <limits>
 
 int main()
 {
-	std::cout << std::boolalpha;
-	std::cout << has_typedef<int>::value << '\n';
-	std::cout << has_typedef<foo>::value << '\n';
+	int n = 3;
+	int i = 0;
 
+	switch (n % 2)
+	{
+		case 0:
+			do
+			{
+				++i;
+		case 1: ++i;
+			}
+			while (--n > 0);
+	}
+
+	std::cout << i;
+	
 	std::cin.get();
 	return 0;
 }
