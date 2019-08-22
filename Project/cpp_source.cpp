@@ -1,23 +1,19 @@
 #include <iostream>
 #include <limits>
-
-template<typename T>
-T sum(T arg)
-{
-	return arg;
-}
-
-template<typename T, typename ...Args>
-T sum(T arg, Args... args)
-{
-	return arg + sum<T>(args...);
-}
+#include <algorithm>
 
 int main()
 {
-	auto n1 = sum(0.5, 1, 0.5, 1);
-	auto n2 = sum(1, 0.5, 1, 0.5);
-	std::cout << n1 << n2;
+	int x = 10;
+	int y = 10;
+
+	const int &max = std::max(x, y);
+	const int &min = std::min(x, y);
+
+	x = 11;
+	y = 9;
+
+	std::cout << max << min;
 	
 	std::cin.get();
 	return 0;
