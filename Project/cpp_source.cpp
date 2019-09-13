@@ -21,7 +21,15 @@ std::unique_ptr<IEngine> makeV8Engine()
 	return std::make_unique<V8Engine>();
 }
 
-class Car
+struct ICar
+{
+	virtual void drive() = 0;
+	virtual ~ICar() = default;
+};
+
+std::unique_ptr<ICar> makeCar(std::unique_ptr<IEngine> &&engine);
+
+class Car : public ICar
 {
 public:
 	Car(std::unique_ptr<IEngine> &&engine)
@@ -40,6 +48,11 @@ private:
 	std::unique_ptr<IEngine> m_engine;
 };
 
+std::unique_ptr<ICar> makeCar(std::unique_ptr<IEngine> &&engine)
+{
+	return std::make_unique<Car>(std::move(engine));
+}
+
 class MockEngine : public IEngine
 {
 public:
@@ -49,8 +62,8 @@ public:
 
 int main()
 {
-	Car car(std::make_unique<MockEngine>());
-	car.drive();
+	auto car = makeCar(std::make_unique<MockEngine>());
+	car->drive();
 
 	std::cin.get();
 	return 0;
