@@ -21,37 +21,20 @@ std::unique_ptr<IEngine> makeV8Engine()
 	return std::make_unique<V8Engine>();
 }
 
-struct ICar
-{
-	virtual void drive() = 0;
-	virtual ~ICar() = default;
-};
-
-std::unique_ptr<ICar> makeCar(std::unique_ptr<IEngine> &&engine);
-
-class Car : public ICar
+template <typename TEngine>
+class Car
 {
 public:
-	Car(std::unique_ptr<IEngine> &&engine)
-		: m_engine(std::move(engine))
-	{
-	}
-
 	void drive()
 	{
-		m_engine->start();
+		m_engine.start();
 		std::cout << "driving...\n";
-		m_engine->stop();
+		m_engine.stop();
 	}
 
 private:
-	std::unique_ptr<IEngine> m_engine;
+	TEngine m_engine;
 };
-
-std::unique_ptr<ICar> makeCar(std::unique_ptr<IEngine> &&engine)
-{
-	return std::make_unique<Car>(std::move(engine));
-}
 
 class MockEngine : public IEngine
 {
@@ -62,8 +45,7 @@ public:
 
 int main()
 {
-	auto icar = makeCar(makeV8Engine());
-	auto &car = static_cast<Car &>(*icar);
+	Car<V8Engine> car;
 	car.drive();
 
 	std::cin.get();
