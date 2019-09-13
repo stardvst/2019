@@ -62,8 +62,9 @@ public:
 
 int main()
 {
-	auto car = makeCar(std::make_unique<MockEngine>());
-	car->drive();
+	auto icar = makeCar(makeV8Engine());
+	auto &car = static_cast<Car &>(*icar);
+	car.drive();
 
 	std::cin.get();
 	return 0;
