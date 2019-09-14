@@ -1,14 +1,19 @@
 #include <iostream>
 
+struct Player
+{
+	std::shared_ptr<Player> companion;
+	~Player() { std::cout << __FUNCTION__ << '\n'; }
+};
+
 int main()
 {
-	std::shared_ptr<int> int1 = std::make_shared<int>(100);
-	std::weak_ptr<int> weak1(int1);
-	const std::weak_ptr<int>& weak2(weak1);
+	std::shared_ptr<Player> jasmine(new Player);
+	std::shared_ptr<Player> albert(new Player);
+	jasmine->companion = albert;
+	albert->companion = jasmine;
 
-	std::shared_ptr<int> orig = weak2.lock();
-
-	std::cout << *orig << '\n';
+	// circular dependency: dtors are never called, oops!
 
 	std::cin.get();
 	return 0;
