@@ -1,81 +1,43 @@
 #include <iostream>
+#include <boost/intrusive_ptr.hpp>
 
-struct IEngine
+struct Person
 {
-	virtual void start() = 0;
-	virtual void stop() = 0;
-	virtual ~IEngine() = default;
+	std::string name = "Empty name";
+	int age;
+
+	// intrusive ptr
+	long references = 0;
 };
 
-std::unique_ptr<IEngine> makeV8Engine();
-
-class V8Engine : public IEngine
+// must provide these functions
+inline void intrusive_ptr_add_ref(Person *person)
 {
-public:
-	void start() override { std::cout << "V8Engine::start\n"; }
-	void stop() override { std::cout << "V8Engine::stop\n"; }
-};
-
-class V6Engine : public IEngine
-{
-public:
-	void start() override { std::cout << "V6Engine::start\n"; }
-	void stop() override { std::cout << "V6Engine::stop\n"; }
-};
-
-std::unique_ptr<IEngine> makeV8Engine()
-{
-	return std::make_unique<V8Engine>();
+	++person->references;
 }
 
-struct ICar
+inline void intrusive_ptr_release(Person *person)
 {
-	virtual void drive() = 0;
-	virtual ~ICar() = default;
-};
-
-std::unique_ptr<ICar> makeV8Car();
-std::unique_ptr<ICar> makeV6Car();
-
-template <typename TEngine>
-class Car : public ICar
-{
-public:
-	void drive() override
-	{
-		m_engine.start();
-		std::cout << "driving...\n";
-		m_engine.stop();
-	}
-
-private:
-	TEngine m_engine;
-};
-
-std::unique_ptr<ICar> makeV8Car()
-{
-	return std::make_unique<Car<V8Engine>>();
+	if (--person->references == 0)
+		delete person;
 }
 
-std::unique_ptr<ICar> makeV6Car()
+void test()
 {
-	return std::make_unique<Car<V6Engine>>();
-}
+	//std::shared_ptr<Person> person(new Person);
 
-class MockEngine : public IEngine
-{
-public:
-	void start() override { std::cout << "MockEngine::start\n";	}
-	void stop() override { std::cout << "MockEngine::stop\n"; }
-};
+	auto pPerson = new Person;
+
+	// same object can be "shared", unlike shared_ptr
+	boost::intrusive_ptr<Person> person1(pPerson);
+	boost::intrusive_ptr<Person> person2(pPerson);
+	std::cout << person1->name << '\n';
+	std::cout << person2->name << '\n';
+}
 
 int main()
 {
-	auto v8Car = makeV8Car();
-	v8Car->drive();
-
-	auto v6Car = makeV6Car();
-	v6Car->drive();
+	test();
 
 	std::cin.get();
 	return 0;
