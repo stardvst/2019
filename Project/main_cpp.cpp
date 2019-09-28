@@ -1,18 +1,14 @@
 #include <iostream>
 
-struct S
-{
-	S() { std::cout << "make an S\n"; }
-	~S() { std::cout << "destroy an S\n"; }
-};
+struct S {};
+struct W : private S { int a; };
+struct T { S s; };
 
 int main()
 {
-	auto memory = (S *)malloc(sizeof S);
-	new (memory) S();
-
-	memory->~S();
-	free(memory);
+	std::cout << sizeof(S) << '\n';
+	std::cout << sizeof(W) << '\n';
+	std::cout << sizeof(T);
 
 	std::cin.get();
 }
