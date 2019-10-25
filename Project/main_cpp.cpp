@@ -1,5 +1,10 @@
 #include <iostream>
 
+void my_term_handler()
+{
+	std::cout << __FUNCTION__ << '\n';
+}
+
 struct A
 {
 	~A()
@@ -10,10 +15,12 @@ struct A
 
 int main()
 {
+	std::set_terminate(my_term_handler);
+
 	try
 	{
 		A a;
-		//throw 32;
+		throw 32;
 	}
 	catch (int a)
 	{
