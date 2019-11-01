@@ -1,24 +1,30 @@
 #include <iostream>
 
-class A { int a; };
-class B { int b; };
-class C : public A, public B {};
+extern "C" int func();
+
+asm(R"(
+.globl func
+	.type func, @function
+	func:
+	.cfi_startproc
+	movl $7, %eax
+	ret
+	.cfi_endproc
+)");
 
 int main()
 {
-	C c;
-	A *a = &c;
-	B *b = &c;
+	int n = func();
 
-	std::cout << (a == reinterpret_cast<A *>(b)) << '\n';
-	std::cout << (&c == a) << '\n';
-	std::cout << (&c == b) << '\n';
-	std::cout << (a == &c) << '\n';
-	std::cout << (b == &c) << '\n';
-	std::cout << a << ' ' << &c << '\n';
-	std::cout << b << ' ' << &c << '\n';
+	asm("leal (%0,%0,4),%0"
+		: "=r" (n)
+		: "0" (n));
 
-	//std::cout << Bar::f() << '\n';
+	std::cout << "7 * 5 = " << n << std::endl; //'\n';
+
+	asm("movq $60, %rax\n\t"
+		"movq $2, %rdi\n\t"
+		"syscall");
 
 	std::cin.get();
 }
