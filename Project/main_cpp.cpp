@@ -1,31 +1,24 @@
 #include <iostream>
 
-void my_term_handler()
-{
-	std::cout << __FUNCTION__ << '\n';
-}
-
-struct A
-{
-	~A()
-	{
-		throw 42;
-	}
-};
+class A { int a; };
+class B { int b; };
+class C : public A, public B {};
 
 int main()
 {
-	std::set_terminate(my_term_handler);
+	C c;
+	A *a = &c;
+	B *b = &c;
 
-	try
-	{
-		A a;
-		throw 32;
-	}
-	catch (int a)
-	{
-		std::cout << a << '\n';
-	}
+	std::cout << (a == reinterpret_cast<A *>(b)) << '\n';
+	std::cout << (&c == a) << '\n';
+	std::cout << (&c == b) << '\n';
+	std::cout << (a == &c) << '\n';
+	std::cout << (b == &c) << '\n';
+	std::cout << a << ' ' << &c << '\n';
+	std::cout << b << ' ' << &c << '\n';
+
+	//std::cout << Bar::f() << '\n';
 
 	std::cin.get();
 }
