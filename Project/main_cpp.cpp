@@ -1,30 +1,71 @@
 #include <iostream>
+#include <vector>
 
-extern "C" int func();
+struct Point
+{
+	Point(int x, int y) {}
+};
 
-asm(R"(
-.globl func
-	.type func, @function
-	func:
-	.cfi_startproc
-	movl $7, %eax
-	ret
-	.cfi_endproc
-)");
+class Polygon
+{
+public:
+	Polygon() : area_(-1) {}
+	void AddPoint(Point pt)
+	{
+		InvalidateArea();
+		points_.push_back(pt);
+	}
+	const Point GetPoint(int i) const { return points_[i]; }
+	int GetNumPoints() const { return points_.size(); }
+	double GetArea() const
+	{
+		if (area_ < 0) // if not yet calculated and cached
+			CalcArea(); // calculate now
+		return area_;
+	}
+
+private:
+	void InvalidateArea() const { area_ = -1; }
+	void CalcArea() const
+	{
+		area_ = 0;
+		std::vector<Point>::const_iterator i;
+		for (i = points_.begin(); i != points_.end(); ++i)
+			area_ += 5/* some work */;
+	}
+
+	std::vector<Point> points_;
+	mutable double area_;
+};
+
+const Polygon operator+(const Polygon &lhs, const Polygon &rhs)
+{
+	Polygon ret = lhs;
+	const int last = rhs.GetNumPoints();
+	for (int i = 0; i < last; ++i) // concatenate
+		ret.AddPoint(rhs.GetPoint(i));
+	return ret;
+}
+
+void f(Polygon &poly)
+{
+	poly.AddPoint(Point(0, 0));
+}
+
+void g(Polygon &rPoly) { rPoly.AddPoint(Point(1, 1)); }
+void h(Polygon *pPoly) { pPoly->AddPoint(Point(2, 2)); }
 
 int main()
 {
-	int n = func();
+	Polygon poly;
+	f(poly);
+	g(poly);
+	h(&poly);
 
-	asm("leal (%0,%0,4),%0"
-		: "=r" (n)
-		: "0" (n));
+	//poly.GetPoint(0) = Point(0, 0); // compile error
 
-	std::cout << "7 * 5 = " << n << std::endl; //'\n';
-
-	asm("movq $60, %rax\n\t"
-		"movq $2, %rdi\n\t"
-		"syscall");
+	Polygon p1, p2, p3;
+	//(p1 + p2) = p3; // compile error
 
 	std::cin.get();
 }
