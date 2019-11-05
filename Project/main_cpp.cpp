@@ -1,71 +1,48 @@
 #include <iostream>
-#include <vector>
 
-struct Point
+template <typename Derived>
+struct Base
 {
-	Point(int x, int y) {}
-};
-
-class Polygon
-{
-public:
-	Polygon() : area_(-1) {}
-	void AddPoint(Point pt)
+	void do_smth()
 	{
-		InvalidateArea();
-		points_.push_back(pt);
-	}
-	const Point GetPoint(int i) const { return points_[i]; }
-	int GetNumPoints() const { return points_.size(); }
-	double GetArea() const
-	{
-		if (area_ < 0) // if not yet calculated and cached
-			CalcArea(); // calculate now
-		return area_;
+		static_cast<Derived *>(this)->do_smth_impl();
 	}
 
 private:
-	void InvalidateArea() const { area_ = -1; }
-	void CalcArea() const
+	void do_smth_impl()
 	{
-		area_ = 0;
-		std::vector<Point>::const_iterator i;
-		for (i = points_.begin(); i != points_.end(); ++i)
-			area_ += 5/* some work */;
+		std::cout << "default impl\n";
 	}
-
-	std::vector<Point> points_;
-	mutable double area_;
 };
 
-const Polygon operator+(const Polygon &lhs, const Polygon &rhs)
+struct Foo : Base<Foo>
 {
-	Polygon ret = lhs;
-	const int last = rhs.GetNumPoints();
-	for (int i = 0; i < last; ++i) // concatenate
-		ret.AddPoint(rhs.GetPoint(i));
-	return ret;
-}
+	void do_smth_impl()
+	{
+		std::cout << "foo impl\n";
+	}
+};
 
-void f(Polygon &poly)
+struct Bar : Base<Bar>
 {
-	poly.AddPoint(Point(0, 0));
-}
+};
 
-void g(Polygon &rPoly) { rPoly.AddPoint(Point(1, 1)); }
-void h(Polygon *pPoly) { pPoly->AddPoint(Point(2, 2)); }
+template <typename Derived>
+void use(Base<Derived> &o)
+{
+	o.do_smth();
+}
 
 int main()
 {
-	Polygon poly;
-	f(poly);
-	g(poly);
-	h(&poly);
+	Foo foo;
+	Bar bar;
 
-	//poly.GetPoint(0) = Point(0, 0); // compile error
+	use(foo);
+	use(bar);
 
-	Polygon p1, p2, p3;
-	//(p1 + p2) = p3; // compile error
+	//Base<int> d;
+	//use(d);
 
 	std::cin.get();
 }
