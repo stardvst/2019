@@ -1,31 +1,32 @@
 #include <iostream>
 
 template <typename T>
-T adder(T v)
+bool pair_comparer(T a)
 {
-	return v;
+	return false;
+}
+
+template <typename T>
+bool pair_comparer(T a, T b)
+{
+	return a == b;
 }
 
 template <typename T, typename... Args>
-T adder(T first, Args... args)
+bool pair_comparer(T a, T b, Args... args)
 {
-	return first + adder(args...);
+	return a == b && pair_comparer(args...);
 }
-
-struct A{};
 
 int main()
 {
-	long sum = adder(1, 2, 3, 8, 7);
-	std::cout << "sum: " << sum << '\n';
+	std::cout << "compare (1.5, 1.5, 2, 2, 6, 6): " << std::boolalpha << pair_comparer(1.5, 1.5, 2, 2, 6, 6) << '\n';
 
-	std::string s1 = "x", s2 = "aa", s3 = "bb", s4 = "yy";
-	std::cout << "sum: " << adder(s1, s2, s3, s4) << '\n';
+	// double == int: compile error
+	//std::cout << "compare (1.5, 1, 2, 2, 6, 6): " << std::boolalpha << pair_comparer(1.5, 1, 2, 2, 6, 6) << '\n';
 
-	//std::cout << "sum: " << adder(5, s2, s3, s4) << '\n';
-
-	/*A a, b;
-	A aSum = adder(a, b);*/
+	// odd number of args: compile error
+	std::cout << "compare (1.5, 1.5, 2, 2, 6, 6, 7): " << std::boolalpha << pair_comparer(1.5, 1.5, 2, 2, 6, 6, 7) << '\n';
 
 	std::cin.get();
 }
