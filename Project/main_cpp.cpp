@@ -1,48 +1,31 @@
 #include <iostream>
 
-template <typename Derived>
-struct Base
+template <typename T>
+T adder(T v)
 {
-	void do_smth()
-	{
-		static_cast<Derived *>(this)->do_smth_impl();
-	}
-
-private:
-	void do_smth_impl()
-	{
-		std::cout << "default impl\n";
-	}
-};
-
-struct Foo : Base<Foo>
-{
-	void do_smth_impl()
-	{
-		std::cout << "foo impl\n";
-	}
-};
-
-struct Bar : Base<Bar>
-{
-};
-
-template <typename Derived>
-void use(Base<Derived> &o)
-{
-	o.do_smth();
+	return v;
 }
+
+template <typename T, typename... Args>
+T adder(T first, Args... args)
+{
+	return first + adder(args...);
+}
+
+struct A{};
 
 int main()
 {
-	Foo foo;
-	Bar bar;
+	long sum = adder(1, 2, 3, 8, 7);
+	std::cout << "sum: " << sum << '\n';
 
-	use(foo);
-	use(bar);
+	std::string s1 = "x", s2 = "aa", s3 = "bb", s4 = "yy";
+	std::cout << "sum: " << adder(s1, s2, s3, s4) << '\n';
 
-	//Base<int> d;
-	//use(d);
+	//std::cout << "sum: " << adder(5, s2, s3, s4) << '\n';
+
+	/*A a, b;
+	A aSum = adder(a, b);*/
 
 	std::cin.get();
 }
