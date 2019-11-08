@@ -1,32 +1,46 @@
 #include <iostream>
+#include <vector>
+#include <list>
+#include <set>
 
-template <typename T>
-bool pair_comparer(T a)
+template <template <typename, typename> typename CT, typename VT, typename AT>
+void foo(const CT<VT, AT> &cont)
 {
-	return false;
+	for (const auto &it : cont)
+		std::cout << it << '\n';
+	std::cout << "----\n";
 }
 
-template <typename T>
-bool pair_comparer(T a, T b)
+template <template <typename, typename...> typename CT, typename VT, typename... Args>
+void bar(const CT<VT, Args...> &cont)
 {
-	return a == b;
-}
-
-template <typename T, typename... Args>
-bool pair_comparer(T a, T b, Args... args)
-{
-	return a == b && pair_comparer(args...);
+	for (const auto &it : cont)
+		std::cout << it << '\n';
+	std::cout << "----\n";
 }
 
 int main()
 {
-	std::cout << "compare (1.5, 1.5, 2, 2, 6, 6): " << std::boolalpha << pair_comparer(1.5, 1.5, 2, 2, 6, 6) << '\n';
+	std::vector<int> v = { 1,2,3,4 };
+	std::cout << "vector:\n";
+	foo(v);
 
-	// double == int: compile error
-	//std::cout << "compare (1.5, 1, 2, 2, 6, 6): " << std::boolalpha << pair_comparer(1.5, 1, 2, 2, 6, 6) << '\n';
+	std::list<int> l;
+	l.push_back(1);
+	l.push_back(2);
+	l.push_back(3);
+	l.push_back(4);
+	std::cout << "list:\n";
+	foo(l);
 
-	// odd number of args: compile error
-	std::cout << "compare (1.5, 1.5, 2, 2, 6, 6, 7): " << std::boolalpha << pair_comparer(1.5, 1.5, 2, 2, 6, 6, 7) << '\n';
+	// set has 3 template parameters
+	std::set<int> s;
+	s.insert(1);
+	s.insert(2);
+	s.insert(3);
+	s.insert(4);
+	std::cout << "set:\n";
+	bar(s);
 
 	std::cin.get();
 }
