@@ -1,18 +1,34 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <iostream>
+struct Base
+{
+	virtual void f() { std::cout << "Base::f()" << std::endl; }
+};
 
-extern char *environ[];
+struct Derived :Base
+{
+	virtual void f() { std::cout << "Derived::f()" << std::endl; }
+};
+
+
+void SomeMethod(Base *object, void (Base:: *ptr)())
+{
+	(object->*ptr)();
+}
+
+// void SomeMethod(Base &object, void (Base::*ptr)())
+// {
+//     (object.*ptr)();
+// }
+
+
 int main()
 {
-	int index = 0;
-	char **env = environ;
-	printf("Environment variables:\n");
-	index = 0;
-	while (env[index])
-	{
-		printf("envp[%d]: %s\n", index, env[index]);
-		++index;
-	}
-	return 0;
+	Base b;
+	Derived d;
+	Base *p = &b;
+	SomeMethod(p, &Base::f); //calls Base::f()
+	p = &d;
+	SomeMethod(p, &Base::f); //calls Derived::f()
+
+	std::cin.get();
 }
