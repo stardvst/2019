@@ -1,15 +1,65 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <cppabi.h>
 
-int main()
+int num_ctrl_c = 0;
+
+void catch_int(int singnum)
 {
-	const char *mangled_name = "_ZNK3MapI10StringName#RefI8GDScriotE10ComparatorIS0_E16DefaultAllocatorE3hasERKS0_";
-	int status = -1;
+	sigset_t mask_set;
+	sigset_t old_set;
 
-	char *demangled_name = abi::__cxa_demangle(mangled_name, NULL, NULL, &status);
-	printf("Demangled: %s\n", demangled_name);
+	signal(SIGINT, catch_int);
 
-	free(demangled_name);
-	return 0;
+	sigfillset(&mask_set);
+	sigprocmask(SIG_SETMASK, &mask_set, &old_set);
+
+	++num_ctrl_c;
+
+	if (num_ctrl_c >= 5)
+	{
+		printf("Do you want to exit?");
+		fflush(stdout);
+
+		char c;
+		scanf("%c", &c);
+		if (c == 'y')
+		{
+			printf("Exiting...\n");
+			fflush(stdout);
+			exit(0);
+		}
+		if (c == 'n')
+		{
+			printf("Continuing...\n");
+			fflush(stdout);
+			num_ctrl_c = 0;
+		}
+	}
+
+	sigprocmask(SIG_SETMASK, &mask_set, &old_set);
+}
+
+void catch_susp(int signum)
+{
+	sigset_t mask_set;
+	sigset_t old_set;
+
+	signal(SIGTSTP, catch_susp);
+
+	sigfillset(&mask_set);
+	sigprocmask(SIG_SETMASK, &mask_set, &old_set);
+
+	printf("# of Ctrl+C: %d", num_ctrl_c);
+	fflush(stdout);
+
+	sigprocmask(SIG_SETMASK, &mask_set, NULL);
+}
+
+void main()
+{
+	signal(SIGINT, catch_int);
+	signal(SIGTSTP, catch_susp);
+	for (; ; )
+		pause();
 }
