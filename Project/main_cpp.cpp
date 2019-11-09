@@ -1,37 +1,65 @@
-#include <vector>
+#include <iostream>
 
-std::vector<std::vector<int>> rotateLeft(std::vector<std::vector<int>> matrix)
+struct ABC
 {
-	const int size = matrix.size();
-	if (matrix[0].size() != size) return matrix; // should be nxn matrix
-	for (auto row = 0; row < size / 2; ++row)
-	{
-		for (auto col = row; col < size - row - 1; ++col)
-		{
-			auto tmp = matrix[row][col];
-			matrix[row][col] = matrix[col][size - row - 1]; // right -> left
-			matrix[col][size - row - 1] = matrix[size - row - 1][size - col - 1]; // bottom -> top
-			matrix[size - row - 1][size - col - 1] = matrix[size - col - 1][row]; // left -> right
-			matrix[size - col - 1][row] = tmp; // top -> bottom
-		}
-	}
-	return matrix;
-}
 
-std::vector<std::vector<int>> rotateRight(std::vector<std::vector<int>> matrix)
-{
-	const int size = matrix.size();
-	if (matrix[0].size() != size) return matrix; // should be nxn matrix
-	for (auto row = 0; row < size / 2; ++row)
+	void set(const int data)
 	{
-		for (auto col = row; col < size - row - 1; ++col)
+		std::cout << "set(" << data << ")\n";
+		if (!this)
 		{
-			auto tmp = matrix[row][col];
-			matrix[row][col] = matrix[size - col - 1][row]; // bottom -> top	
-			matrix[size - col - 1][row] = matrix[size - row - 1][size - col - 1]; // left -> right
-			matrix[size - row - 1][size - col - 1] = matrix[col][size - row - 1]; // top -> bottom
-			matrix[col][size - row - 1] = tmp; // right -> left
+			std::cout << "this is null, can't set\n";
+			print(); // will crash, calls this->print()
+			return;
 		}
+		this->data = data;
 	}
-	return matrix;
+
+	void get() const
+	{
+		if (!this)
+		{
+			std::cout << "null ptr deref, can't get\n";
+			print(); // will crash, calls this->print()
+			return;
+		}
+
+		print();
+	}
+
+	void print() const
+	{
+		//std::cout << "data = " << data << "\n";
+		std::cout << "print\n"; // works isnce no access to data member
+	}
+
+	virtual void vprint()
+	{
+		std::cout << "virtual print\n"; // doesn't work since tries to deref vtable
+	}
+
+	int data;
+};
+
+int main()
+{
+
+	ABC abc;
+	abc.set(100);
+	abc.get();
+
+	ABC *p1Abc = &abc;
+	ABC *p2Abc = nullptr;
+
+	p1Abc->set(111);
+	p1Abc->get();
+
+	p2Abc->set(222);
+	p2Abc->get();
+	// using fptr = void (ABC::*)();
+	// fptr f = &ABC::vprint;
+	// (p2Abc->*f)();
+	// //p2Abc->vprint();
+
+	std::cin.get();
 }
