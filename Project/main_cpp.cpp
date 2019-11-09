@@ -1,123 +1,56 @@
 #include <iostream>
-#include "int.h"
-
+#include "list.h"
 
 int main()
 {
 
-	Integer::Int<Integer::Type<int>::type> i;
-	try
+	List l;
+	std::cout << "List is empty, size = " << l.size() << std::endl;
+
+	std::cout << std::endl << "Adding elements..." << std::endl;
+	l.push_back(2);
+	l.push_front(7);
+	l.push_front(8);
+	l.push_back(4);
+	l.push_front(3);
+	l.push_back(6);
+	l.insert(l.begin(), 1);
+
+	std::cout << std::endl;
+	for (node_wrapper nw = l.begin(); nw != l.end(); ++nw)
 	{
-		// i=Integer::Int<Integer::Type<int>::type>(-555555555555555555555555555555555555555);
+		std::cout << *nw << " -> ";
 	}
-	catch (const Integer::err & e)
+	std::cout << "NULL" << std::endl;
+	std::cout << "size = " << l.size() << std::endl;
+
+	std::cout << std::endl << "Removing element from front..." << std::endl;
+	l.pop_front();
+	for (node_wrapper nw = l.begin(); nw != l.end(); ++nw)
 	{
-		std::cerr << e.msg;
+		std::cout << *nw << " -> ";
 	}
-	std::cout << i;
+	std::cout << "NULL" << std::endl;
+	std::cout << "size = " << l.size() << std::endl;
 
-	// Integer::Int<Integer::Type<int>::type> i1;
+	std::cout << std::endl << "Removing element from back..." << std::endl;
+	l.pop_back();
+	for (node_wrapper nw = l.begin(); nw != l.end(); ++nw)
+	{
+		std::cout << *nw << " -> ";
+	}
+	std::cout << "NULL" << std::endl;
+	std::cout << "size = " << l.size() << std::endl;
 
-	// std::cout << "i1, default value = " << i1 << "\n\n";
+	std::cout << std::endl << "Removing 2nd element..." << std::endl;
+	l.erase(++l.begin());
+	for (node_wrapper nw = l.begin(); nw != l.end(); ++nw)
+	{
+		std::cout << *nw << " -> ";
+	}
+	std::cout << "NULL" << std::endl;
+	std::cout << "size = " << l.size() << std::endl;
 
-	// std::cout << "Enter i1: ";
-	// try {
-	//   std::cin >> i1;
-	// }
-	// catch(const Integer::err& e) {
-	//   std::cerr << e.msg;
-	// }
-	// std::cout << "\ni1 = " << i1 << '\n';
-
-	// Integer::Int<Integer::Type<int>::type> i2 = 12;
-	// std::cout << "i2 = " << i2 << '\n'
-	//   << "gcd(i1, i2) = " << gcd(i1, i2) << '\n'
-	//   << "lcm(i1, i2) = " << lcm(i1, i2) << "\n\n";
-
-	// Integer::Int<Integer::Type<int>::type> i3(i1);
-	// std::cout << "i3 = i1 = " << i3 << "\n\n";
-
-	// int i;
-	// std::cout << "Enter an int: ";
-	// std::cin >> i;
-
-	// std::cout << "\ni1 = " << i1 << '\n';
-	// std::cout << "i = " << i << "\n\n"
-
-	//   << i1 << " + " << i3 << " = " << i1 + i3 << '\n'
-	//   << i1 << " + " << i << " = " << i1 + i << '\n'
-	//   << i << " + " << i1 << " = " << i + i1 << '\n'
-	//   << i1 << " - " << i3 << " = " << i1 - i3 << '\n'
-	//   << i1 << " - " << i << " = " << i1 - i << '\n'
-	//   << i << " - " << i1 << " = " << i - i1 << '\n'
-	//   << i1 << " * " << i3 << " = " << i1 * i3 << '\n'
-	//   << i1 << " * " << i << " = " << i1 * i << '\n'
-	//   << i << " * " << i1 << " = " << i * i1 << '\n';
-	// try {
-	//   std::cout << i1 << " / " << i3 << " = " << i1 / i3 << '\n';
-	// }
-	// catch(const Integer::err& e) {
-	//   std::cerr << i1 << " / " << i3 << ": " << e.msg;
-	// }
-	// try {
-	//   std::cout << i1 << " / " << i << " = " << i1 / i << '\n';
-	// }
-	// catch(const Integer::err& e) {
-	//   std::cerr << i1 << " / " << i << ": " << e.msg;
-	// }
-	// try {
-	//   std::cout << i << " / " << i1 << " = " << i / i1 << '\n';
-	// }
-	// catch(const Integer::err& e) {
-	//   std::cerr << i << " / " << i1 << ": " << e.msg;
-	// }
-
-	// std::cout << "\n\n" << i1 << " == " << i3 << ": " << std::boolalpha << (i1 == i3) << '\n'
-	//   << i1 << " == " << i << ": " << std::boolalpha << (i1 == i) << '\n'
-	//   << i << " == " << i1 << ": " << std::boolalpha << (i == i1) << '\n'
-	//   << i1 << " != " << i3 << ": " << std::boolalpha << (i1 != i3) << '\n'
-	//   << i1 << " != " << i << ": " << std::boolalpha << (i1 != i) << '\n'
-	//   << i << " != " << i1 << ": " << std::boolalpha << (i != i1) << '\n'
-	//   << i1 << " < " << i3 << ": " << std::boolalpha << (i1 < i3) << '\n'
-	//   << i1 << " < " << i << ": " << std::boolalpha << (i1 < i) << '\n'
-	//   << i << " < " << i1 << ": " << std::boolalpha << (i < i1) << '\n'
-	//   << i1 << " > " << i3 << ": " << std::boolalpha << (i1 > i3) << '\n'
-	//   << i1 << " > " << i << ": " << std::boolalpha << (i1 > i) << '\n'
-	//   << i << " > " << i1 << ": " << std::boolalpha << (i > i1) << '\n'
-	//   << i1 << " <= " << i3 << ": " << std::boolalpha << (i1 <= i3) << '\n'
-	//   << i1 << " <= " << i << ": " << std::boolalpha << (i1 <= i) << '\n'
-	//   << i << " <= " << i1 << ": " << std::boolalpha << (i <= i1) << '\n'
-	//   << i1 << " >= " << i3 << ": " << std::boolalpha << (i1 >= i3) << '\n'
-	//   << i1 << " >= " << i << ": " << std::boolalpha << (i1 >= i) << '\n'
-	//   << i << " >= " << i1 << ": " << std::boolalpha << (i >= i1) << "\n\n\n"
-
-	//   << i1 << " += " << i3 << "; ";
-	// i1 += i3; 
-	// std::cout << i1 << '\n' << i1 << " += " << i << '\n';
-	// i1 += i;
-	// std::cout << i1 << '\n' << i << " += " << i1 << '\n';
-	// i += i1;
-	// std::cout << i << '\n' << i1 << " -= " << i3 << '\n';
-	// i1 -= i3; 
-	// std::cout << i1 << '\n' <<  i1 << " -= " << i << '\n';
-	// i1 -= i;
-	// std::cout << i1 << '\n' << i << " -= " << i1 << '\n';
-	// i -= i1;
-	// std::cout << i << "\n\n"
-
-	//   << "i1++ = ";
-	// std::cout << i1++ << '\n';
-	// std::cout << "++i1 = ";
-	// std::cout << ++i1 << '\n';
-	// std::cout << "i1-- = ";
-	// std::cout << i1-- << '\n';
-	// std::cout << "--i1 = ";
-	// std::cout << --i1 << "\n\n"
-
-	//   << !i1 << '\n' << ~i1 << "\n\n\n";
-
-	// int a = 0;
-	// std::cout << "a = 0\ni1 = " << i1 << "\na = i1 => a = " << (a = i1) << std::endl;
-
+	std::cin.get();
 	return 0;
 }
