@@ -1,26 +1,37 @@
-#include <iostream>
-#include "set.h"
+#include <vector>
 
-int main()
+std::vector<std::vector<int>> rotateLeft(std::vector<std::vector<int>> matrix)
 {
-	set s;
-
-	s.insert(10);
-	s.insert(8);
-	s.insert(9);
-
-	for (node_wrapper nw = s.begin(); nw != s.end(); ++nw)
+	const int size = matrix.size();
+	if (matrix[0].size() != size) return matrix; // should be nxn matrix
+	for (auto row = 0; row < size / 2; ++row)
 	{
-		std::cout << *nw << " ";
+		for (auto col = row; col < size - row - 1; ++col)
+		{
+			auto tmp = matrix[row][col];
+			matrix[row][col] = matrix[col][size - row - 1]; // right -> left
+			matrix[col][size - row - 1] = matrix[size - row - 1][size - col - 1]; // bottom -> top
+			matrix[size - row - 1][size - col - 1] = matrix[size - col - 1][row]; // left -> right
+			matrix[size - col - 1][row] = tmp; // top -> bottom
+		}
 	}
-	std::cout << std::endl << std::endl;
+	return matrix;
+}
 
-	for (node_wrapper nw = s.rbegin(); nw != s.rend(); --nw)
+std::vector<std::vector<int>> rotateRight(std::vector<std::vector<int>> matrix)
+{
+	const int size = matrix.size();
+	if (matrix[0].size() != size) return matrix; // should be nxn matrix
+	for (auto row = 0; row < size / 2; ++row)
 	{
-		std::cout << *nw << " ";
+		for (auto col = row; col < size - row - 1; ++col)
+		{
+			auto tmp = matrix[row][col];
+			matrix[row][col] = matrix[size - col - 1][row]; // bottom -> top	
+			matrix[size - col - 1][row] = matrix[size - row - 1][size - col - 1]; // left -> right
+			matrix[size - row - 1][size - col - 1] = matrix[col][size - row - 1]; // top -> bottom
+			matrix[col][size - row - 1] = tmp; // right -> left
+		}
 	}
-	std::cout << std::endl;
-
-	std::cin.get();
-	return 0;
+	return matrix;
 }
