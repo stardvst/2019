@@ -1,22 +1,26 @@
-#include <stdio.h>     /* standard I/O functions                         */
-#include <unistd.h>    /* standard unix functions, like getpid()         */
-#include <signal.h>    /* signal name macros, and the signal() prototype */
+#include <iostream>
+#include "header.h"
 
-/* first, here is the signal handler */
-void catch_int(int sig_num)
+void print(int n)
 {
-	/* re-set the signal handler again to catch_int, for next time */
-	signal(SIGINT, catch_int);
-	printf("Don't do that\n");
-	fflush(stdout);
+	std::cout << "n = " << n;
 }
 
-int main(int argc, char *argv[])
-{
-	/* set the INT (Ctrl-C) signal handler to 'catch_int' */
-	signal(SIGINT, catch_int);
+#define CALL_WITH_MAX(a, b) print((a) > (b) ? (a) : (b))
 
-	/* now, lets get into an infinite loop of doing nothing. */
-	for (;; )
-		pause();
+int main()
+{
+	std::cout << "from main: " << &globalStr;
+
+	std::cout << "\nfrom f: ";
+	f();
+
+	int a = 5, b = 0;
+	CALL_WITH_MAX(++a, b);
+	std::cout << "\na = " << a << "\n";
+	CALL_WITH_MAX(++a, b + 10);
+	std::cout << '\n' << a << '\n';
+
+	std::cin.get();
+	return 0;
 }
