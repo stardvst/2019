@@ -1,34 +1,15 @@
-#include <iostream>
-struct Base
-{
-	virtual void f() { std::cout << "Base::f()" << std::endl; }
-};
-
-struct Derived :Base
-{
-	virtual void f() { std::cout << "Derived::f()" << std::endl; }
-};
-
-
-void SomeMethod(Base *object, void (Base:: *ptr)())
-{
-	(object->*ptr)();
-}
-
-// void SomeMethod(Base &object, void (Base::*ptr)())
-// {
-//     (object.*ptr)();
-// }
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <cppabi.h>
 
 int main()
 {
-	Base b;
-	Derived d;
-	Base *p = &b;
-	SomeMethod(p, &Base::f); //calls Base::f()
-	p = &d;
-	SomeMethod(p, &Base::f); //calls Derived::f()
+	const char *mangled_name = "_ZNK3MapI10StringName#RefI8GDScriotE10ComparatorIS0_E16DefaultAllocatorE3hasERKS0_";
+	int status = -1;
 
-	std::cin.get();
+	char *demangled_name = abi::__cxa_demangle(mangled_name, NULL, NULL, &status);
+	printf("Demangled: %s\n", demangled_name);
+
+	free(demangled_name);
+	return 0;
 }
