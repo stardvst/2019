@@ -1,24 +1,31 @@
 #include <iostream>
+#include <chrono>
+#include <thread>
+#include <functional>
 
-class A
+void timer_start(std::function<void(void)> func, unsigned int interval)
 {
-public:
-	A()
+	std::thread([func, interval]()
 	{
-		std::cout << "ctor" << std::endl;
-	}
-	operator unsigned long()
-	{
-		return 0;
-	}
-};
+		while (true)
+		{
+			auto x = std::chrono::steady_clock::now() + std::chrono::milliseconds(interval);
+			func();
+			std::this_thread::sleep_until(x);
+		}
+	}).detach();
+}
+
+void do_something()
+{
+	std::cout << "I am doing something" << std::endl;
+}
 
 int main()
 {
-	A a;
-	if (a == 0UL)
-		std::cout << "a == 0UL" << std::endl;
+	timer_start(do_something, 3000);
+	while (true)
+		;
 
 	std::cin.get();
-	return 0;
 }
