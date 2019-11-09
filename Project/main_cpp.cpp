@@ -1,65 +1,22 @@
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h>     /* standard I/O functions                         */
+#include <unistd.h>    /* standard unix functions, like getpid()         */
+#include <signal.h>    /* signal name macros, and the signal() prototype */
 
-int num_ctrl_c = 0;
-
-void catch_int(int singnum)
+/* first, here is the signal handler */
+void catch_int(int sig_num)
 {
-	sigset_t mask_set;
-	sigset_t old_set;
-
+	/* re-set the signal handler again to catch_int, for next time */
 	signal(SIGINT, catch_int);
-
-	sigfillset(&mask_set);
-	sigprocmask(SIG_SETMASK, &mask_set, &old_set);
-
-	++num_ctrl_c;
-
-	if (num_ctrl_c >= 5)
-	{
-		printf("Do you want to exit?");
-		fflush(stdout);
-
-		char c;
-		scanf("%c", &c);
-		if (c == 'y')
-		{
-			printf("Exiting...\n");
-			fflush(stdout);
-			exit(0);
-		}
-		if (c == 'n')
-		{
-			printf("Continuing...\n");
-			fflush(stdout);
-			num_ctrl_c = 0;
-		}
-	}
-
-	sigprocmask(SIG_SETMASK, &mask_set, &old_set);
-}
-
-void catch_susp(int signum)
-{
-	sigset_t mask_set;
-	sigset_t old_set;
-
-	signal(SIGTSTP, catch_susp);
-
-	sigfillset(&mask_set);
-	sigprocmask(SIG_SETMASK, &mask_set, &old_set);
-
-	printf("# of Ctrl+C: %d", num_ctrl_c);
+	printf("Don't do that\n");
 	fflush(stdout);
-
-	sigprocmask(SIG_SETMASK, &mask_set, NULL);
 }
 
-void main()
+int main(int argc, char *argv[])
 {
+	/* set the INT (Ctrl-C) signal handler to 'catch_int' */
 	signal(SIGINT, catch_int);
-	signal(SIGTSTP, catch_susp);
-	for (; ; )
+
+	/* now, lets get into an infinite loop of doing nothing. */
+	for (;; )
 		pause();
 }
