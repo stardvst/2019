@@ -1,60 +1,53 @@
 #include <iostream>
+#include <chrono>
+#include <ctime>
 
-template <typename... Ts>
-struct tuple
+//////////////////////////////////////////////////////////////////////////
+// c++14 features
+//////////////////////////////////////////////////////////////////////////
+
+// return type deduction for functions
+auto square(int n)
 {
-};
-
-template <typename T, typename... Ts>
-struct tuple<T, Ts...> : tuple<Ts...>
-{
-	T data;
-
-	tuple(T v, Ts... args)
-		: tuple<Ts...>(args...)
-		, data(v)
-	{
-	}
-};
-
-template <size_t, typename>
-struct elem_type;
-
-template <typename T, typename... Ts>
-struct elem_type<0, tuple<T, Ts...>>
-{
-	using type = T;
-};
-
-template <size_t N, typename T, typename... Ts>
-struct elem_type<N, tuple<T, Ts...>>
-{
-	using type = typename elem_type<N - 1, tuple<Ts...>>::type;
-};
-
-template <size_t N, typename... Ts>
-typename std::enable_if<N == 0, typename elem_type<0, tuple<Ts...>>::type &>::type get(tuple<Ts...> &t)
-{
-	return t.data;
+	return n * n;
 }
 
-template <size_t N, typename T, typename... Ts>
-typename std::enable_if<N != 0, typename elem_type<N, tuple<T, Ts...>>::type &>::type get(tuple<T, Ts...> &t)
+//////////////////////////////////////////////////////////////////////////
+
+// generic lambdas
+auto lambda = [](auto a, auto b) { return a * b; };
+//struct lambdaImpl
+//{
+//	template <typename A, typename B>
+//	auto operator()(A a, B b) -> decltype(a *b)
+//	{
+//		return a * b;
+//	}
+//};
+//auto lambda = lambdaImpl();
+
+//////////////////////////////////////////////////////////////////////////
+
+// extended capturing in lambdas
+auto timer = [val = std::chrono::system_clock::now()]
 {
-	tuple<Ts...> &base = t;
-	return get<N - 1>(base);
-}
+	return std::chrono::system_clock::time_point(std::chrono::system_clock::now() - val);
+};
+
+//////////////////////////////////////////////////////////////////////////
 
 int main()
 {
-	tuple<double, uint64_t, const char *> t1(12.2, 42, "big");
+	std::cout << square(5) << '\n';
+	std::cout << lambda(3, 4) << '\n';
 
-	std::cout << "0th element is " << get<0>(t1) << '\n';
-	std::cout << "1st element is " << get<1>(t1) << '\n';
-	std::cout << "2nd element is " << get<2>(t1) << '\n';
+	auto tt = std::chrono::system_clock::to_time_t(timer());
+	std::cout << std::ctime(&tt);
 
-	get<1>(t1) = 103;
-	std::cout << "1st element is " << get<1>(t1) << '\n';
+	auto p = std::make_unique<int>(10);
+	auto lmb = [p = std::move(p)]{ return *p; }; // declares new data member p
+	std::cout << lmb() << '\n';
 
 	std::cin.get();
+	return 0;
 }
