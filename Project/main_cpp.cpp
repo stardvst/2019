@@ -1,52 +1,37 @@
 #include <iostream>
-#include <chrono>
-#include <ctime>
+#include <vector>
 
-//////////////////////////////////////////////////////////////////////////
-// c++14 features
-//////////////////////////////////////////////////////////////////////////
-
-// return type deduction for functions
-auto square(int n)
+void push(std::vector<int> &v, int value)
 {
-	return n * n;
+	// will avoid reallocation
+	if (v.capacity() <= v.size())
+	{
+		std::cout << "inserting " << value << "..., but first, capacity: " << v.capacity() << std::endl;
+		v.reserve(v.size() * 1.1);
+		std::cout << "capacity after resize: " << v.capacity() << std::endl;
+	}
+
+	// will always be the same, contrary to if we used push_back() without reserve()
+	std::cout << "element addresses:\n";
+	for (const auto &a : v)
+		std::cout << &a << '\n';
+
+	std::cout << '\n';
+
+	v.push_back(value);
 }
-
-//////////////////////////////////////////////////////////////////////////
-
-// generic lambdas
-auto lambda = [](auto a, auto b) { return a * b; };
-//struct lambdaImpl
-//{
-//	template <typename A, typename B>
-//	auto operator()(A a, B b) -> decltype(a *b)
-//	{
-//		return a * b;
-//	}
-//};
-//auto lambda = lambdaImpl();
-
-//////////////////////////////////////////////////////////////////////////
-
-// extended capturing in lambdas
-auto timer = [val = std::chrono::system_clock::now()]
-{
-	return std::chrono::system_clock::time_point(std::chrono::system_clock::now() - val);
-};
-
-//////////////////////////////////////////////////////////////////////////
 
 int main()
 {
-	std::cout << square(5) << '\n';
-	std::cout << lambda(3, 4) << '\n';
+	std::vector<int> v;
 
-	auto tt = std::chrono::system_clock::to_time_t(timer());
-	std::cout << std::ctime(&tt);
-
-	auto p = std::make_unique<int>(10);
-	auto lmb = [p = std::move(p)]{ return *p; }; // declares new data member p
-	std::cout << lmb() << '\n';
+	push(v, 5);
+	push(v, 3);
+	push(v, 6);
+	push(v, 7);
+	push(v, 1);
+	push(v, 2);
+	push(v, 4);
 
 	std::cin.get();
 	return 0;
