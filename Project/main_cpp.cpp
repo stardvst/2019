@@ -1,60 +1,53 @@
 #include <iostream>
 
-template <typename... Ts>
-struct tuple
+template<typename First, typename... Rest>
+struct Tuple : public Tuple<Rest...>
 {
+	Tuple(First first, Rest... rest) : Tuple<Rest...>(rest...), first(first) {}
+
+	First first;
 };
 
-template <typename T, typename... Ts>
-struct tuple<T, Ts...> : tuple<Ts...>
+template<typename First>
+struct Tuple<First>
 {
-	T data;
+	Tuple(First first) : first(first) {}
 
-	tuple(T v, Ts... args)
-		: tuple<Ts...>(args...)
-		, data(v)
+	First first;
+};
+
+template<int index, typename First, typename... Rest>
+struct GetImpl
+{
+	static auto value(const Tuple<First, Rest...> *t) -> decltype(GetImpl<index - 1, Rest...>::value(t))
 	{
+		return GetImpl<index - 1, Rest...>::value(t);
 	}
 };
 
-template <size_t, typename...>
-struct elem_type;
-
-template <typename T, typename... Ts>
-struct elem_type<0, T, Ts...>
+template<typename First, typename... Rest>
+struct GetImpl<0, First, Rest...>
 {
-	using type = T;
+	static First value(const Tuple<First, Rest...> *t)
+	{
+		return t->first;
+	}
 };
 
-template <size_t N, typename T, typename... Ts>
-struct elem_type<N, T, Ts...>
+template<int index, typename First, typename... Rest>
+auto get(const Tuple<First, Rest...> &t) -> decltype(GetImpl<index, First, Rest...>::value(&t))
 {
-	using type = typename elem_type<N - 1, Ts...>::type;
-};
-
-template <size_t N, typename... Ts>
-typename std::enable_if<N == 0, typename elem_type<0, Ts...>::type>::type &get(tuple<Ts...> &t)
-{
-	return t.data;
-}
-
-template <size_t N, typename T, typename... Ts>
-typename std::enable_if<N != 0, typename elem_type<N, T, Ts...>::type>::type &get(tuple<T, Ts...> &t)
-{
-	tuple<Ts...> &base = t;
-	return get<N - 1>(base);
+	return GetImpl<index, First, Rest...>::value(&t);
 }
 
 int main()
 {
-	tuple<double, uint64_t, const char *> t1(12.2, 42, "big");
+	Tuple<int, int, double> c(3, 5, 1.1);
+	printf("%d\n", get<0>(c));
+	printf("%d\n", get<1>(c));
+	printf("%f\n", get<2>(c));
 
-	std::cout << "0th element is " << get<0>(t1) << '\n';
-	std::cout << "1st element is " << get<1>(t1) << '\n';
-	std::cout << "2nd element is " << get<2>(t1) << '\n';
-
-	get<1>(t1) = 103;
-	std::cout << "1st element is " << get<1>(t1) << '\n';
+	//get<0>(c) = 3;
 
 	std::cin.get();
 }
