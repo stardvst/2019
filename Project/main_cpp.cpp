@@ -47,17 +47,35 @@ typename std::enable_if_t<N != 0, typename elem_type<N, T, Ts...>::type> &get(tu
 
 //////////////////////////////////////////////////////////////////////////
 
-template <class ElemType, typename T, typename... Ts>
-typename std::enable_if_t<std::is_same_v<ElemType, T>, ElemType> &get(tuple<T, Ts...> &t)
+//template <class ElemType, typename T, typename... Ts>
+//typename std::enable_if_t<std::is_same_v<ElemType, T>, ElemType> &get(tuple<T, Ts...> &t)
+//{
+//	static_assert(!(std::is_same_v<T, Ts> || ...), "duplicate type T in get<T>(tuple)"); // c++17
+//	return t.data;
+//}
+//
+//template <class ElemType, typename T, typename... Ts>
+//typename std::enable_if_t<!std::is_same_v<ElemType, T>, ElemType> &get(tuple<T, Ts...> &t)
+//{
+//	tuple<Ts...> &base = t;
+//	return get<ElemType>(base);
+//}
+
+template <class ElemType>
+void get(tuple<> &t)
 {
-	//tuple<Ts...> &base = t;
-	//static_assert(!std::is_same_v<decltype(get<ElemType>(base)), ElemType>);
-	static_assert(!(std::is_same_v<T, Ts> || ...), "duplicate type T in get<T>(tuple)"); // c++17
+}
+
+template <class ElemType, typename T, typename... Ts, std::enable_if_t<std::is_same_v<T, ElemType>, int> = 0>
+ElemType &get(tuple<T, Ts...> &t)
+{
+	tuple<Ts...> &base = t;
+	static_assert(std::is_void_v<decltype(get<ElemType>(base))>);
 	return t.data;
 }
 
-template <class ElemType, typename T, typename... Ts>
-typename std::enable_if_t<!std::is_same_v<ElemType, T>, ElemType> &get(tuple<T, Ts...> &t)
+template <class ElemType, typename T, typename... Ts, std::enable_if_t<!std::is_same_v<T, ElemType>, int> = 0>
+decltype(auto) get(tuple<T, Ts...> &t)
 {
 	tuple<Ts...> &base = t;
 	return get<ElemType>(base);
