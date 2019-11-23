@@ -74,7 +74,7 @@
     <LibraryPath>C:\glpk-4.65\w64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\glpk-4.65\src;$(IncludePath)</IncludePath>
+    <IncludePath>C:\boost\boost_1_67_0;$(IncludePath)</IncludePath>
     <LibraryPath>C:\glpk-4.65\w64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -98,11 +98,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glpk_4_65.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,21 +128,41 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glpk_4_65.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cfunction.c" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="BTree.cpp" />
+    <ClCompile Include="c_source.c" />
+    <ClCompile Include="cpp_source.cpp" />
+    <ClCompile Include="functions_cpp.cpp" />
+    <ClCompile Include="Individual.cpp" />
+    <ClCompile Include="list.cpp" />
+    <ClCompile Include="main_c.c" />
+    <ClCompile Include="main_cpp.cpp" />
+    <ClCompile Include="set.cpp" />
+    <ClCompile Include="simulated_annealing_cities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BTree.h" />
+    <ClInclude Include="command.h" />
+    <ClInclude Include="functions_cpp.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="Individual.h" />
+    <ClInclude Include="int.h" />
+    <ClInclude Include="list.h" />
+    <ClInclude Include="set.h" />
+    <ClInclude Include="shape.h" />
+    <ClInclude Include="simulated_annealing_cities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="f.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
