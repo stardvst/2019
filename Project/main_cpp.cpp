@@ -1,62 +1,71 @@
 #include <iostream>
 
-template <typename... T>
-struct Structure
-{
-};
+//////////////////////////////////////////////////////////////////////////
 
-template <typename T, typename... Rest>
-struct Structure<T, Rest...>
+template <typename T>
+void foo(T x, std::true_type)
 {
-	Structure(const T &f, const Rest &... r)
-		: first(f)
-		, rest(r...)
+	std::cout << "Primitive type\n";
+}
+
+template <typename T>
+void foo(T x, std::false_type)
+{
+	std::cout << "Not a primitive type\n";
+}
+
+template <typename T>
+void foo(T x)
+{
+	foo(x, std::is_fundamental<T>{});
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+template <typename T, typename flag = typename std::is_fundamental<T>::type>
+struct C;
+
+template <typename T>
+struct C<T, std::true_type>
+{
+	C(T t) : x(t)
 	{
 	}
 
-	template <size_t idx>
-	decltype(auto) get()
+	T x;
+
+	void foo()
 	{
-		return GetHelper<idx, Structure<T, Rest...>>::get(*this);
-	}
-
-	T first;
-	Structure<Rest...> rest;
-};
-
-template <size_t idx, typename T>
-struct GetHelper
-{
-};
-
-template <typename T, typename... Rest>
-struct GetHelper<0, Structure<T, Rest...>>
-{
-	static T get(Structure<T, Rest...> &data)
-	{
-		return data.first;
+		std::cout << "Primitive type\n";
 	}
 };
 
-template <size_t idx, typename T, typename... Rest>
-struct GetHelper<idx, Structure<T, Rest...>>
+template <typename T>
+struct C<T, std::false_type>
 {
-	static T get(Structure<T, Rest...> &data)
+	C(T t) : x(t)
 	{
-		return GetHelper<idx - 1, Structure<Rest...>>::get(data.rest);
+	}
+
+	T x;
+
+	void foo()
+	{
+		std::cout << "Not a primitive type\n";
 	}
 };
 
 int main()
 {
-	Structure<int, char, bool> s(5, 'a', false);
-	std::cout << s.first << '\n';
-	std::cout << s.rest.first << '\n';
-	std::cout << s.rest.rest.first << '\n';
+	struct A {};
 
-	std::cout << s.get<0>() << '\n';
-	std::cout << s.get<1>() << '\n';
-	std::cout << s.get<2>() << '\n';
+	foo(5);
+	foo(A());
+
+	C<int> c1(3);
+	c1.foo();
+	C<A> c2{ A() };
+	c2.foo();
 
 	std::cin.get();
 }
