@@ -1,71 +1,33 @@
 #include <iostream>
+#include <set>
+#include <map>
+#include <algorithm>
+#include <iterator>
 
-//////////////////////////////////////////////////////////////////////////
-
-template <typename T>
-void foo(T x, std::true_type)
+struct cmp
 {
-	std::cout << "Primitive type\n";
-}
-
-template <typename T>
-void foo(T x, std::false_type)
-{
-	std::cout << "Not a primitive type\n";
-}
-
-template <typename T>
-void foo(T x)
-{
-	foo(x, std::is_fundamental<T>{});
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-template <typename T, typename flag = typename std::is_fundamental<T>::type>
-struct C;
-
-template <typename T>
-struct C<T, std::true_type>
-{
-	C(T t) : x(t)
+	bool operator()(int i, const std::pair<int, double> &p) const
 	{
+		return i < p.first;
 	}
 
-	T x;
-
-	void foo()
+	bool operator()(const std::pair<int, double> &p, int i) const
 	{
-		std::cout << "Primitive type\n";
-	}
-};
-
-template <typename T>
-struct C<T, std::false_type>
-{
-	C(T t) : x(t)
-	{
-	}
-
-	T x;
-
-	void foo()
-	{
-		std::cout << "Not a primitive type\n";
+		return p.first < i;
 	}
 };
 
 int main()
 {
-	struct A {};
+	std::set<int> s1{ 1, 2, 3, 4 };
+	std::map<int, double> s2{ {1, 0}, {2,0}, {4,0} };
 
-	foo(5);
-	foo(A());
+	std::set<int> result;
 
-	C<int> c1(3);
-	c1.foo();
-	C<A> c2{ A() };
-	c2.foo();
+	std::set_difference(s1.begin(), s1.end(), s2.begin(), s2.end(),
+		std::inserter(result, result.end()), cmp());
+
+	std::cout << *result.begin(); // will print 3
 
 	std::cin.get();
 }
