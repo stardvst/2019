@@ -1,33 +1,23 @@
 #include <iostream>
-#include <set>
-#include <map>
-#include <algorithm>
-#include <iterator>
+#include <tuple>
 
-struct cmp
+struct Foo
 {
-	bool operator()(int i, const std::pair<int, double> &p) const
+	Foo(std::tuple<int, float>)
 	{
-		return i < p.first;
+		std::cout << "Foo from tuple\n";
 	}
-
-	bool operator()(const std::pair<int, double> &p, int i) const
+	Foo(int, float)
 	{
-		return p.first < i;
+		std::cout << "Foo from int and float\n";
 	}
 };
 
 int main()
 {
-	std::set<int> s1{ 1, 2, 3, 4 };
-	std::map<int, double> s2{ {1, 0}, {2,0}, {4,0} };
-
-	std::set<int> result;
-
-	std::set_difference(s1.begin(), s1.end(), s2.begin(), s2.end(),
-		std::inserter(result, result.end()), cmp());
-
-	std::cout << *result.begin(); // will print 3
+	std::tuple<int, float> t(1, 3.14);
+	std::pair<Foo, Foo> p1(t, t);
+	std::pair<Foo, Foo> p2(std::piecewise_construct, t, t);
 
 	std::cin.get();
 }
