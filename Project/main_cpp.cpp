@@ -1,20 +1,30 @@
 #include <iostream>
 #include <tuple>
-#include <map>
+#include <string>
+
+template <typename T>
+T adder(T v)
+{
+	return v;
+}
+
+template <typename T, typename... Args>
+T adder(T first, Args... args)
+{
+	return first + adder(args...);
+}
+
+template <typename... Args>
+auto foldAdder(Args... args)
+{
+	std::cout << __FUNCSIG__ << '\n';
+	return (args + ...);
+}
 
 int main()
 {
-	std::map<int, std::string> m;
-
-	m.emplace(std::piecewise_construct,
-		std::forward_as_tuple(10),
-		std::forward_as_tuple(20, 'a'));
-
-	// compile error
-	//auto t = std::forward_as_tuple(20, 'a');
-	//m.emplace(std::piecewise_construct, std::forward_as_tuple(10), t);
-
-	std::cout << "m[10] = " << m[10] << '\n';
+	std::cout << adder(4, 5, 6) << '\n';
+	std::cout << foldAdder<int>(4, 5, 6) << '\n';
 
 	std::cin.get();
 }
