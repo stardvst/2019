@@ -1,23 +1,20 @@
 #include <iostream>
 #include <tuple>
-
-struct Foo
-{
-	Foo(std::tuple<int, float>)
-	{
-		std::cout << "Foo from tuple\n";
-	}
-	Foo(int, float)
-	{
-		std::cout << "Foo from int and float\n";
-	}
-};
+#include <map>
 
 int main()
 {
-	std::tuple<int, float> t(1, 3.14);
-	std::pair<Foo, Foo> p1(t, t);
-	std::pair<Foo, Foo> p2(std::piecewise_construct, t, t);
+	std::map<int, std::string> m;
+
+	m.emplace(std::piecewise_construct,
+		std::forward_as_tuple(10),
+		std::forward_as_tuple(20, 'a'));
+
+	// compile error
+	//auto t = std::forward_as_tuple(20, 'a');
+	//m.emplace(std::piecewise_construct, std::forward_as_tuple(10), t);
+
+	std::cout << "m[10] = " << m[10] << '\n';
 
 	std::cin.get();
 }
