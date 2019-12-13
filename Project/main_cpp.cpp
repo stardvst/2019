@@ -1,23 +1,19 @@
 #include <iostream>
-#include <vector>
 
-std::vector<int> reverse(int i)
+struct A
 {
-	return std::vector<int> {i};
-}
-
-template <typename... Ts>
-std::vector<int> reverse(int i, Ts... ts)
-{
-	auto v = reverse(ts...);
-	v.push_back(i);
-	return v;
-}
+	A(int &p) : a(p) {}
+	void operator()() const { ++a; }
+	int &a;
+};
 
 int main()
 {
-	for (const auto &i : reverse(1, 2, 3, 4))
-		std::cout << i << ' ';
+	int p = 5;
+	A o(p);
+	std::cout << o.a << '\n';
+	o();
+	std::cout << o.a << '\n';
 
 	std::cin.get();
 }

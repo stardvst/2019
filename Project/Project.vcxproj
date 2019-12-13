@@ -149,7 +149,7 @@
     <ClCompile Include="functions_cpp.cpp" />
     <ClCompile Include="Individual.cpp" />
     <ClCompile Include="list.cpp" />
-    <ClCompile Include="rvo.cpp" />
+    <ClCompile Include="main_cpp.cpp" />
     <ClCompile Include="set.cpp" />
     <ClCompile Include="simulated_annealing_cities.cpp" />
   </ItemGroup>

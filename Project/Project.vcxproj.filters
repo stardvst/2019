@@ -39,7 +39,7 @@
     <ClCompile Include="set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rvo.cpp">
+    <ClCompile Include="main_cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
