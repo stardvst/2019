@@ -17,7 +17,9 @@ int main()
 
 	rules.If(a > 0);
 	rules.If(b > 0);
-	rules.NotIf(c == 0);
+
+	PreventingRulesEngine &neg = rules.Not;
+	neg.If(c == 0);
 	std::cin.ignore();
 
 	std::cout << "rules satisfied: " << rules() << '\n';
