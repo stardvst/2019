@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
@@ -135,6 +135,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>true</EnableModules>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -161,6 +162,7 @@
     <ClInclude Include="Individual.h" />
     <ClInclude Include="int.h" />
     <ClInclude Include="list.h" />
+    <ClInclude Include="rulesEngine.h" />
     <ClInclude Include="set.h" />
     <ClInclude Include="shape.h" />
     <ClInclude Include="simulated_annealing_cities.h" />
