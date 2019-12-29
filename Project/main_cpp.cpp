@@ -1,31 +1,46 @@
 #include <iostream>
 #include <functional>
+#include <memory>
 
 struct abc
 {
-	void f(int)
-	{
-		std::cout << __FUNCSIG__ << std::endl;
-	}
+};
 
-	void f(int) const
+// can't delete an incomplete type
+//std::unique_ptr<abc> f(std::unique_ptr<abc> p)
+//{
+//	if (!p) throw int{};
+//	return p;
+//}
+
+// deleter is type-erased
+std::shared_ptr<abc> f(std::shared_ptr<abc> p)
+{
+	if (!p) throw int{};
+	return p;
+}
+
+template <typename T>
+struct ErasedDeleter : std::function<void(T *)>
+{
+	ErasedDeleter()
+		: std::function<void(T *)>
 	{
-		std::cout << __FUNCSIG__ << std::endl;
+		[](T *p)
+		{
+			delete p;
+		}
+	}
+	{
 	}
 };
 
+template <typename T>
+using ErasedPtr = std::unique_ptr<T, ErasedDeleter<T>>;
+
 int main()
 {
-	const abc x;
-	int a = 1;
-
-	// need to cast
-	using fptr = void (abc:: *)(int) const;
-	// pass x by ref otherwise won't compile
-	std::bind((fptr)&abc::f, std::cref(x), std::placeholders::_1)(a);
-
-	// or just
-	std::bind<void (abc:: *)(int) const>(&abc::f, std::cref(x), std::placeholders::_1)(a);
+	ErasedPtr<abc> p{ new abc };
 
 	std::cin.get();
 }
