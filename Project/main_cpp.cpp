@@ -1,46 +1,46 @@
-#include <iostream>
+#include <cmath>
 #include <functional>
-#include <memory>
+#include <iostream>
+#include <map>
 
-struct abc
+double add(double a, double b)
 {
-};
-
-// can't delete an incomplete type
-//std::unique_ptr<abc> f(std::unique_ptr<abc> p)
-//{
-//	if (!p) throw int{};
-//	return p;
-//}
-
-// deleter is type-erased
-std::shared_ptr<abc> f(std::shared_ptr<abc> p)
-{
-	if (!p) throw int{};
-	return p;
+	return a + b;
 }
 
-template <typename T>
-struct ErasedDeleter : std::function<void(T *)>
+struct Sub
 {
-	ErasedDeleter()
-		: std::function<void(T *)>
+	double operator()(double a, double b)
 	{
-		[](T *p)
-		{
-			delete p;
-		}
-	}
-	{
+		return a - b;
 	}
 };
 
-template <typename T>
-using ErasedPtr = std::unique_ptr<T, ErasedDeleter<T>>;
+double multThree(double a, double b, double c)
+{
+	return a * b * c;
+}
 
 int main()
 {
-	ErasedPtr<abc> p{ new abc };
+	using namespace std::placeholders;
 
+	std::map<const char, std::function<double(double, double)>> dispTable{
+		{ '+', add },
+		{ '-', Sub() },
+		{ '*', std::bind(multThree, 1, _1, _2) },
+		{ '/', [](double a, double b)
+			{
+				return a / b;
+			}
+		}
+	};
+
+	std::cout << "3.5 + 4.5 = " << dispTable['+'](3.5, 4.5) << std::endl;
+	std::cout << "3.5 - 4.5 = " << dispTable['-'](3.5, 4.5) << std::endl;
+	std::cout << "3.5 * 4.5 = " << dispTable['*'](3.5, 4.5) << std::endl;
+	std::cout << "3.5 / 4.5 = " << dispTable['/'](3.5, 4.5) << std::endl;
+
+	std::cout << std::endl;
 	std::cin.get();
 }
