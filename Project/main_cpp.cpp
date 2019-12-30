@@ -1,17 +1,12 @@
 #include <iostream>
-
-namespace [[deprecated]] old_stuff
-{
-
-void legecy()
-{
-}
-
-}
+#include <map>
 
 int main()
 {
-	old_stuff::legecy();
+	std::map<int, int> m{ { 1, 2 }, { 2, 3 }, { 3, 4 } };
+
+	for (const auto &[k, v] : m)
+		std::cout << k << " -> " << v << '\n';
 
 	std::cin.get();
 }
