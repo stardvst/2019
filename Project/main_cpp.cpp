@@ -1,25 +1,13 @@
 #include <iostream>
-#include <fstream>
-#include <iterator>
+#include <utility>
 
-struct NonMovable
+void f(std::pair<int, int>)
 {
-	NonMovable(int)
-	{
-	}
-
-	NonMovable(const NonMovable &) = delete;
-	NonMovable(NonMovable &&) = delete;
-};
-
-NonMovable make()
-{
-	return NonMovable(42);
 }
 
 int main()
 {
-	auto largeObj = make();
+	f(std::pair(42, 42));
 
 	std::cin.get();
 }
