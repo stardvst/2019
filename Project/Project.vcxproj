@@ -148,7 +148,6 @@
     <ClCompile Include="c_source.c" />
     <ClCompile Include="cpp_source.cpp" />
     <ClCompile Include="functions_cpp.cpp" />
-    <ClCompile Include="Individual.cpp" />
     <ClCompile Include="list.cpp" />
     <ClCompile Include="main_cpp.cpp" />
     <ClCompile Include="set.cpp" />

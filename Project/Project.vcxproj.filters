@@ -27,9 +27,6 @@
     <ClCompile Include="simulated_annealing_cities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Individual.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="functions_cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

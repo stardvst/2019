@@ -2,12 +2,24 @@
 #include <fstream>
 #include <iterator>
 
+struct NonMovable
+{
+	NonMovable(int)
+	{
+	}
+
+	NonMovable(const NonMovable &) = delete;
+	NonMovable(NonMovable &&) = delete;
+};
+
+NonMovable make()
+{
+	return NonMovable(42);
+}
+
 int main()
 {
-	std::ifstream ifstr("2048.h");
-	std::string content((std::istreambuf_iterator<char>(ifstr)),
-		std::istreambuf_iterator<char>());
-	std::cout << content << '\n';
+	auto largeObj = make();
 
 	std::cin.get();
 }
