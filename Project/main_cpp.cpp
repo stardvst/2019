@@ -1,33 +1,19 @@
 #include <iostream>
 
-auto sumCpp11()
+template <typename T>
+auto getValue(T t)
 {
-	return 0;
-}
-
-template <typename T, typename... Args>
-auto sumCpp11(T v, Args... vs)
-{
-	return v + sumCpp11(vs...);
-}
-
-template <typename ...Args>
-auto sumCpp17(Args ...args)
-{
-	//return (args + ... + 0);
-	return (args + ...);
-}
-
-template <typename ...Args>
-void foldPrint(Args &&...args)
-{
-	(std::cout << ... << std::forward<Args>(args)) << '\n';
+	if constexpr (std::is_pointer_v<T>)
+		return *t;
+	else
+		// must be in else case, otherwise both returns will be instantiated
+		return t;
 }
 
 int main()
 {
-	std::cout << sumCpp11(1, 2, 3) << '\n';
-	foldPrint(sumCpp17(1, 2, 3));
+	int a = 5, *p = &a;
+	std::cout << getValue(a) << ' ' << getValue(p);
 
 	std::cin.get();
 }
